@@ -190,7 +190,7 @@ export class PaymentService {
 
       const transactionData = {
         transaction_details: {
-          order_id: `${order?.id}_TaKeu`,
+          order_id: `${order?.id}_TaDie`,
           gross_amount: selectedPackage?.price,
         },
         credit_card: {
