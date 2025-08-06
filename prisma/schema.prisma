@@ -94,7 +94,7 @@ model orders {
   @@index([package_id])
 }
 
-model admin {
+model admins {
   id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name          String
   email         String
