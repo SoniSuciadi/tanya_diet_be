@@ -152,3 +152,18 @@ model order_class {
   @@index([user_id])
   @@index([class_id])
 }
+
+model documents {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title       String
+  description String
+  type        String
+  link        String
+  document    Json
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  created_by  String?
+  updated_by  String?
+  deleted_by  String?
+}
