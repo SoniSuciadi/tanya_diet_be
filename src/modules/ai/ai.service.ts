@@ -18,11 +18,11 @@ export class AiService {
         messages: [
           {
             role: 'system',
-            content: `buat judul singkat maks 4 kata untuk pertanyaan ini (ini pertanyaan scope keuangan) dalam bentuk JSON dengan property title :${inputText}`,
+            content: `buat judul singkat maks 4 kata untuk pertanyaan ini (ini pertanyaan scope diet dan keshatan) dalam bentuk JSON dengan property title :${inputText}`,
           },
           {
             role: 'user',
-            content: `buat judul singkat maks 4 kata untuk pertanyaan ini (ini pertanyaan scope keuangan) dalam bentuk JSON dengan property title :${inputText}`,
+            content: `buat judul singkat maks 4 kata untuk pertanyaan ini (ini pertanyaan scope diet dan keshatan) dalam bentuk JSON dengan property title :${inputText}`,
           },
         ],
         max_tokens: 1000,
