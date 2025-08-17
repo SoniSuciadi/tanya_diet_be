@@ -9,22 +9,21 @@ datasource db {
 }
 
 model users {
-  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email         String        @unique
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String     @unique
   name          String
   phone_number  String
   password      String
   refresh_token String?
-  session_end   DateTime?     @db.Timestamptz(6)
-  created_at    DateTime      @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime      @default(now()) @db.Timestamptz(6)
-  deleted_at    DateTime?     @db.Timestamptz(6)
+  session_end   DateTime?  @db.Timestamptz(6)
+  created_at    DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime   @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime?  @db.Timestamptz(6)
   created_by    String?
   updated_by    String?
   deleted_by    String?
   sessions      sessions[]
   orders        orders[]
-  order_class   order_class[]
 }
 
 model packages {
@@ -110,48 +109,48 @@ model admins {
   deleted_by    String?
 }
 
-model classes {
-  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  price       Int
-  speakers    Json
-  description String
-  material    String
-  date        String
-  time        String
-  banner      Json
-  status      String?
-  created_at  DateTime      @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime      @default(now()) @db.Timestamptz(6)
-  deleted_at  DateTime?     @db.Timestamptz(6)
-  created_by  String?
-  updated_by  String?
-  deleted_by  String?
-  order_class order_class[]
-}
+// model classes {
+//   id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+//   title       String
+//   price       Int
+//   speakers    Json
+//   description String
+//   material    String
+//   date        String
+//   time        String
+//   banner      Json
+//   status      String?
+//   created_at  DateTime      @default(now()) @db.Timestamptz(6)
+//   updated_at  DateTime      @default(now()) @db.Timestamptz(6)
+//   deleted_at  DateTime?     @db.Timestamptz(6)
+//   created_by  String?
+//   updated_by  String?
+//   deleted_by  String?
+//   order_class order_class[]
+// }
 
-model order_class {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id        String    @db.Uuid
-  class_id       String    @db.Uuid
-  amount         Int
-  order_id       String
-  payment_url    String?
-  paid_date      DateTime?
-  paid_data      Json?
-  created_at     DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at     DateTime? @db.Timestamptz(6)
-  created_by     String?
-  updated_by     String?
-  deleted_by     String?
-  payment_status String
-  user           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  classes        classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
+// model order_class {
+//   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+//   user_id        String    @db.Uuid
+//   class_id       String    @db.Uuid
+//   amount         Int
+//   order_id       String
+//   payment_url    String?
+//   paid_date      DateTime?
+//   paid_data      Json?
+//   created_at     DateTime  @default(now()) @db.Timestamptz(6)
+//   updated_at     DateTime  @default(now()) @db.Timestamptz(6)
+//   deleted_at     DateTime? @db.Timestamptz(6)
+//   created_by     String?
+//   updated_by     String?
+//   deleted_by     String?
+//   payment_status String
+//   user           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+//   classes        classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
 
-  @@index([user_id])
-  @@index([class_id])
-}
+//   @@index([user_id])
+//   @@index([class_id])
+// }
 
 model documents {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -166,4 +165,10 @@ model documents {
   created_by  String?
   updated_by  String?
   deleted_by  String?
+}
+
+model n8n_chat_histories {
+  id         Int    @id @default(autoincrement())
+  session_id String
+  message    Json
 }
