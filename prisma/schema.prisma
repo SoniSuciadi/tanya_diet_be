@@ -94,20 +94,7 @@ model orders {
   @@index([package_id])
 }
 
-model admins {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String
-  email         String
-  password      String
-  phone_number  String
-  refresh_token String?
-  created_at    DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at    DateTime? @db.Timestamptz(6)
-  created_by    String?
-  updated_by    String?
-  deleted_by    String?
-}
+
 
 // model classes {
 //   id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -152,6 +139,20 @@ model admins {
 //   @@index([class_id])
 // }
 
+model admins {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  email         String
+  password      String
+  phone_number  String
+  refresh_token String?
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at    DateTime? @db.Timestamptz(6)
+  created_by    String?
+  updated_by    String?
+  deleted_by    String?
+}
 model documents {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title       String
