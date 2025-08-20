@@ -18,6 +18,7 @@ export class AiagentController {
       sendMessageDto.sessionId,
       JSON.parse(sendMessageDto.message),
     );
+
     const userId = await this.aiAgentService.getUserIdBySession(
       sendMessageDto.sessionId,
     );
