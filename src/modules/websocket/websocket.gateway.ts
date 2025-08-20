@@ -33,7 +33,10 @@ export class WebsocketGateway
 
   handleConnection(client: Socket) {
     console.log('User connected:', client.id);
-    const token = client.handshake.headers.cookie?.split('refresh_token=')[1];
+    const token = client.handshake.headers.cookie
+      ?.split('refresh_token=')[1]
+      ?.split(';')[0];
+
     if (token) {
       const decoded = jwt.verify(
         token,
