@@ -108,6 +108,7 @@ model classes {
   status              String        @default("pending")
   description         String
   schedule            String
+  publish_until       DateTime?
   what_you_will_learn String[]
   banner              Json
   meet_link           String?
