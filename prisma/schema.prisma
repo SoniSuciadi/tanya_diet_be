@@ -141,22 +141,24 @@ model live_sessions {
 }
 
 model course_material {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  class_id    String    @db.Uuid
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  class_id    String     @db.Uuid
   title       String
   description String
   video_url   Json
   duration    String
+  document_id String?    @db.Uuid
   key_points  String[]
   pre_test    Json?
   post_test   Json?
-  created_at  DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at  DateTime? @db.Timestamptz(6)
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  deleted_at  DateTime?  @db.Timestamptz(6)
   created_by  String?
   updated_by  String?
   deleted_by  String?
-  class       classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  class       classes    @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  document    documents? @relation(fields: [document_id], references: [id], onDelete: Cascade)
 }
 
 model order_class {
@@ -199,18 +201,19 @@ model admins {
 }
 
 model documents {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  description String
-  type        String
-  link        String?
-  document    Json?
-  created_at  DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at  DateTime? @db.Timestamptz(6)
-  created_by  String?
-  updated_by  String?
-  deleted_by  String?
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String
+  type            String
+  link            String?
+  document        Json?
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime          @default(now()) @db.Timestamptz(6)
+  deleted_at      DateTime?         @db.Timestamptz(6)
+  created_by      String?
+  updated_by      String?
+  deleted_by      String?
+  course_material course_material[]
 }
 
 model n8n_chat_histories {
