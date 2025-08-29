@@ -13,6 +13,7 @@ import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
 import { PaymentModule } from './modules/payment/payment.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { ClassesModule } from './modules/classes/classes.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     AiModule,
     PaymentModule,
     WebsocketModule,
+    ClassesModule,
   ],
   providers: [
     {
