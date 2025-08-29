@@ -51,7 +51,8 @@ export interface Material {
   id: string;
   title: string;
   duration: string;
-  completed: boolean;
-  locked: boolean;
+  preTestPassed: boolean;
+  postTestPassed: boolean;
+  status: 'Locked' | 'Play' | 'Complate';
   description: string;
 }

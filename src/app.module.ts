@@ -14,6 +14,8 @@ import { PaymentService } from './modules/payment/payment.service';
 import { PaymentModule } from './modules/payment/payment.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
 import { ClassesModule } from './modules/classes/classes.module';
+import { OrderClassModule } from './modules/order-class/order-class.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { ClassesModule } from './modules/classes/classes.module';
     PaymentModule,
     WebsocketModule,
     ClassesModule,
+    OrderClassModule,
+    OrderModule,
   ],
   providers: [
     {
@@ -69,7 +73,6 @@ export class AppModule {
           path: 'aiagent/message-response',
           method: RequestMethod.POST,
         },
-        'stream',
       )
       .forRoutes('*');
   }

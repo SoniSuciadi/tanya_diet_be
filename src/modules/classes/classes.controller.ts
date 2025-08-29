@@ -7,10 +7,6 @@ export class ClassesController {
   constructor(private classService: ClassesService) {}
   @Get('')
   async getClassList(@Query() classQueries: ClassQueries) {
-    console.log(
-      '👻 ~ ClassesController ~ getClassList ~ classQueries:',
-      classQueries,
-    );
     const data = await this.classService.classList(classQueries);
     const objResult = {
       totalItems: +data?.[0]?.count,

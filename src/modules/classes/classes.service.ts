@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/common/database/database.service';
-import { ClassData, ClassDetail, ClassQueries } from './classes.dto';
+import { ClassData, ClassDetail, ClassQueries, Material } from './classes.dto';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -104,9 +104,9 @@ export class ClassesService {
                     'title', cm.title,
                     'description', cm.description,
                     'duration', cm.duration,
-                    'completed', TRUE,
-                    'locked', TRUE
-                ) ORDER BY cm.created_at DESC 
+                    'postTestPassed', ocm.post_test_passed,
+                    'preTestPassed', ocm.pre_test_passed
+                ) ORDER BY cm.created_at ASC 
             ) FILTER (WHERE cm.id IS NOT NULL),
             NULL
         ) AS "materials"
@@ -114,6 +114,7 @@ export class ClassesService {
         classes c
         LEFT JOIN order_class oc ON c.id = oc.class_id
         LEFT JOIN course_material cm ON cm.class_id = c.id
+        LEFT JOIN order_course_material ocm ON ocm.course_material_id=cm.id AND ocm.order_class_id = oc.id
         WHERE c.id = $<id>
     GROUP BY
         c.id,oc.payment_status,oc.user_id
@@ -122,6 +123,47 @@ export class ClassesService {
       id,
       userId: this.userService.get().id,
     });
+    if (!data) return null;
+    const materialStatusData = this.generateCourseMaterialStatus(
+      data?.materials || [],
+      data?.isPurchased || false,
+    );
+    data.materials = materialStatusData;
     return data;
+  }
+  generateCourseMaterialStatus(
+    materials: Material[],
+    isPurchased: boolean,
+  ): Material[] {
+    let allPrevComplate = true; // true di awal (gak ada materi sebelumnya)
+    let playAssigned = false; // biar cuma 1 yang 'Play'
+
+    return materials.map((m, i) => {
+      let status: Material['status'];
+
+      if (m.postTestPassed) {
+        // sudah selesai posttest => Complate
+        status = 'Complate';
+      } else {
+        // belum selesai posttest
+        const paymentLocked = !isPurchased && i >= 1; // paywall dari index 1 ke atas
+        const canBePlay = allPrevComplate && !playAssigned && !paymentLocked;
+
+        if (canBePlay) {
+          status = 'Play';
+          playAssigned = true;
+        } else {
+          status = 'Locked';
+        }
+      }
+
+      // update flag untuk materi berikutnya:
+      // allPrevComplate tetap true hanya kalau current sudah Complate
+      if (status !== 'Complate') {
+        allPrevComplate = false;
+      }
+
+      return { ...m, status };
+    });
   }
 }

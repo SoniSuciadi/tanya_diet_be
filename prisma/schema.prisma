@@ -73,24 +73,23 @@ model chats {
 }
 
 model orders {
-  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id               String                  @db.Uuid
-  package_id            String                  @db.Uuid
-  amount                Int
-  order_id              String
-  payment_url           String?
-  paid_date             DateTime?
-  paid_data             Json?
-  created_at            DateTime                @default(now()) @db.Timestamptz(6)
-  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
-  deleted_at            DateTime?               @db.Timestamptz(6)
-  created_by            String?
-  updated_by            String?
-  deleted_by            String?
-  payment_status        String
-  user                  users                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  package               packages                @relation(fields: [package_id], references: [id], onDelete: Cascade)
-  order_course_material order_course_material[]
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id        String    @db.Uuid
+  package_id     String    @db.Uuid
+  amount         Int
+  order_id       String
+  payment_url    String?
+  paid_date      DateTime?
+  paid_data      Json?
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
+  created_by     String?
+  updated_by     String?
+  deleted_by     String?
+  payment_status String
+  user           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  package        packages  @relation(fields: [package_id], references: [id], onDelete: Cascade)
 
   @@index([user_id])
   @@index([package_id])
@@ -164,24 +163,26 @@ model course_material {
 }
 
 model order_class {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id        String    @db.Uuid
-  class_id       String    @db.Uuid
-  amount         Int
-  order_id       String
-  payment_url    String?
-  rating         Float?    @default(0)
-  paid_date      DateTime?
-  paid_data      Json?
-  created_at     DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at     DateTime? @db.Timestamptz(6)
-  created_by     String?
-  updated_by     String?
-  deleted_by     String?
-  payment_status String
-  user           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  classes        classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id               String                  @db.Uuid
+  class_id              String                  @db.Uuid
+  price                 Int
+  original_price        Int
+  order_id              String
+  payment_url           String?
+  rating                Float?                  @default(0)
+  paid_date             DateTime?
+  paid_data             Json?
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at            DateTime?               @db.Timestamptz(6)
+  created_by            String?
+  updated_by            String?
+  deleted_by            String?
+  payment_status        String
+  user                  users                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  classes               classes                 @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  order_course_material order_course_material[]
 
   @@index([user_id])
   @@index([class_id])
@@ -221,19 +222,20 @@ model documents {
 
 model order_course_material {
   id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  order_id           String          @db.Uuid
+  order_class_id     String          @db.Uuid
   course_material_id String          @db.Uuid
   result_pre_test    Json?
   result_post_test   Json?
   pre_test_passed    Boolean?
   post_test_passed   Boolean?
+  video_passed       Boolean?
   created_at         DateTime        @default(now()) @db.Timestamptz(6)
   updated_at         DateTime        @default(now()) @db.Timestamptz(6)
   deleted_at         DateTime?       @db.Timestamptz(6)
   created_by         String?
   updated_by         String?
   deleted_by         String?
-  orders             orders          @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  order_class        order_class     @relation(fields: [order_class_id], references: [id], onDelete: Cascade)
   course_material    course_material @relation(fields: [course_material_id], references: [id], onDelete: Cascade)
 }
 
