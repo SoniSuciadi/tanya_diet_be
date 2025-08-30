@@ -1,4 +1,4 @@
-import { Controller, Headers, Param, Post } from '@nestjs/common';
+import { Controller, Get, Headers, Param, Post } from '@nestjs/common';
 import { OrderClassService } from './order-class.service';
 
 @Controller('order-class')
@@ -18,6 +18,23 @@ export class OrderClassController {
         },
       };
     } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+  @Get('lesson/:classId/:lessonId')
+  async getLessonById(
+    @Param('classId') classId: string,
+    @Param('lessonId') lessonId: string,
+  ) {
+    try {
+      const data = await this.orderClassService.getLessonId(lessonId, classId);
+      console.log('👻 ~ OrderClassController ~ getLessonById ~ data:', data);
+      return {
+        message: 'Berhasil mengambil data lesson',
+        data,
+      };
+    } catch (error) {
+      console.log('👻 ~ OrderClassController ~ getLessonById ~ error:', error);
       throw new Error(error.message);
     }
   }

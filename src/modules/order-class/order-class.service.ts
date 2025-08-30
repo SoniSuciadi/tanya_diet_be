@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DbTx } from 'src/common/database/database.type';
-import { ClassOderData } from './order-class.dto';
+import { ClassOderData, LessonDetail } from './order-class.dto';
 import { DatabaseService } from 'src/common/database/database.service';
 import { UserService } from '../user/user.service';
 import * as midtransClient from 'midtrans-client';
@@ -180,5 +180,35 @@ export class OrderClassService {
     } else {
       return { message: `Payment for class ${orderId} is not completed` };
     }
+  }
+  async getLessonId(
+    lessonId: string,
+    classId: string,
+  ): Promise<LessonDetail | null> {
+    const data = await this.databaseService.db.oneOrNone<LessonDetail>(
+      `
+        SELECT
+            cm.id,
+            cm.title,
+            cm.description,
+            cm.video_url AS "videoUrl",
+            cm.duration,
+            cm.key_points AS "keyPoints",
+            ocm.video_passed AS "videoComplate",
+            ocm.pre_test_passed AS "preTestCompleted",
+            ocm.post_test_passed AS "postTestCompleted"
+        FROM
+            course_material cm
+        RIGHT JOIN order_course_material ocm ON cm.id = ocm.course_material_id
+        RIGHT JOIN order_class oc ON oc.id = ocm.order_class_id
+        WHERE cm.id = $<lessonId> AND oc.class_id = $<classId> AND oc.user_id=$<userId>
+        `,
+      {
+        lessonId,
+        classId,
+        userId: this.userService.get().id,
+      },
+    );
+    return data;
   }
 }
