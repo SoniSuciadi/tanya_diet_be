@@ -92,10 +92,6 @@ export class OrderClassController {
         message: 'Berhasil memperbari data video',
       };
     } catch (error) {
-      console.log(
-        '👻 ~ OrderClassController ~ updateVideoStatus ~ error:',
-        error,
-      );
       throw new Error(error.message);
     }
   }
