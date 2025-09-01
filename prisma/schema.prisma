@@ -95,6 +95,99 @@ model orders {
   @@index([package_id])
 }
 
+model classes {
+  id                  String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title               String
+  instructor          String
+  instructor_bio      String
+  price               Float
+  original_price      Float?
+  duration            String
+  type                String            @default("course")
+  category            String
+  status              String            @default("pending")
+  description         String
+  schedule            String
+  publish_until       DateTime?
+  what_you_will_learn String[]
+  banner              Json
+  created_at          DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime          @default(now()) @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  created_by          String?
+  updated_by          String?
+  deleted_by          String?
+  order_class         order_class[]
+  live_session        live_sessions[]
+  course_material     course_material[]
+}
+
+model live_sessions {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  class_id       String    @db.Uuid
+  title          String
+  description    String
+  meeting_link   String
+  recording_link String?
+  duration       String
+  key_points     String[]
+  created_at     DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime  @default(now()) @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
+  created_by     String?
+  updated_by     String?
+  deleted_by     String?
+  class          classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
+}
+
+model course_material {
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  class_id              String                  @db.Uuid
+  title                 String
+  description           String
+  video_url             Json
+  duration              String
+  document_id           String                  @db.Uuid
+  key_points            String[]
+  pre_test              Json?
+  post_test             Json?
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at            DateTime?               @db.Timestamptz(6)
+  created_by            String?
+  updated_by            String?
+  deleted_by            String?
+  class                 classes                 @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  document              documents               @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  order_course_material order_course_material[]
+}
+
+model order_class {
+  id                    String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id               String                  @db.Uuid
+  class_id              String                  @db.Uuid
+  price                 Int
+  original_price        Int
+  order_id              String
+  payment_url           String?
+  rating                Float?                  @default(0)
+  paid_date             DateTime?
+  paid_data             Json?
+  created_at            DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at            DateTime                @default(now()) @db.Timestamptz(6)
+  deleted_at            DateTime?               @db.Timestamptz(6)
+  created_by            String?
+  updated_by            String?
+  deleted_by            String?
+  payment_status        String
+  user                  users                   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  classes               classes                 @relation(fields: [class_id], references: [id], onDelete: Cascade)
+  order_course_material order_course_material[]
+
+  @@index([user_id])
+  @@index([class_id])
+}
+
 model admins {
   id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name          String
@@ -110,60 +203,44 @@ model admins {
   deleted_by    String?
 }
 
-model classes {
-  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  price       Int
-  speakers    Json
-  description String
-  material    String
-  date        String
-  time        String
-  banner      Json
-  status      String?
-  created_at  DateTime      @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime      @default(now()) @db.Timestamptz(6)
-  deleted_at  DateTime?     @db.Timestamptz(6)
-  created_by  String?
-  updated_by  String?
-  deleted_by  String?
-  order_class order_class[]
-}
-
-model order_class {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id        String    @db.Uuid
-  class_id       String    @db.Uuid
-  amount         Int
-  order_id       String
-  payment_url    String?
-  paid_date      DateTime?
-  paid_data      Json?
-  created_at     DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at     DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at     DateTime? @db.Timestamptz(6)
-  created_by     String?
-  updated_by     String?
-  deleted_by     String?
-  payment_status String
-  user           users     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  classes        classes   @relation(fields: [class_id], references: [id], onDelete: Cascade)
-
-  @@index([user_id])
-  @@index([class_id])
-}
-
 model documents {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  description String
-  type        String
-  link        String?
-  document    Json?
-  created_at  DateTime  @default(now()) @db.Timestamptz(6)
-  updated_at  DateTime  @default(now()) @db.Timestamptz(6)
-  deleted_at  DateTime? @db.Timestamptz(6)
-  created_by  String?
-  updated_by  String?
-  deleted_by  String?
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  description     String
+  type            String
+  link            String?
+  document        Json?
+  embed_status    String            @default("process")
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime          @default(now()) @db.Timestamptz(6)
+  deleted_at      DateTime?         @db.Timestamptz(6)
+  created_by      String?
+  updated_by      String?
+  deleted_by      String?
+  course_material course_material[]
+}
+
+model order_course_material {
+  id                 String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  order_class_id     String          @db.Uuid
+  course_material_id String          @db.Uuid
+  result_pre_test    Json?
+  result_post_test   Json?
+  pre_test_passed    Boolean?
+  post_test_passed   Boolean?
+  video_passed       Boolean?
+  created_at         DateTime        @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime        @default(now()) @db.Timestamptz(6)
+  deleted_at         DateTime?       @db.Timestamptz(6)
+  created_by         String?
+  updated_by         String?
+  deleted_by         String?
+  order_class        order_class     @relation(fields: [order_class_id], references: [id], onDelete: Cascade)
+  course_material    course_material @relation(fields: [course_material_id], references: [id], onDelete: Cascade)
+}
+
+model n8n_chat_histories {
+  id         Int    @id @default(autoincrement())
+  session_id String
+  message    Json
 }

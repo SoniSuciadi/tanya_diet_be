@@ -6,7 +6,7 @@ concurrency:
 
 on:
   push:
-    branches: ['production']
+    branches: ['staging']
 
 jobs:
   build-and-deploy:
@@ -54,5 +54,5 @@ jobs:
         uses: caprover/deploy-from-github@main
         with:
           server: 'https://captain.this.prod.zenika.id'
-          app: 'server-tanya-diet'
-          token: '${{ secrets.CAPROVER_PRODUCTION_TOKEN }}'
+          app: 'stg-server-tanya-diet'
+          token: '${{ secrets.CAPROVER_STAGING_TOKEN }}'

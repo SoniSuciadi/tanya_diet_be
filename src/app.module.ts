@@ -12,7 +12,10 @@ import { AiModule } from './modules/ai/ai.module';
 import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
 import { PaymentModule } from './modules/payment/payment.module';
-import { SseModule } from './modules/sse/sse.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
+import { ClassesModule } from './modules/classes/classes.module';
+import { OrderClassModule } from './modules/order-class/order-class.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -23,7 +26,10 @@ import { SseModule } from './modules/sse/sse.module';
     AiAgentModule,
     AiModule,
     PaymentModule,
-    SseModule,
+    WebsocketModule,
+    ClassesModule,
+    OrderClassModule,
+    OrderModule,
   ],
   providers: [
     {
@@ -63,7 +69,10 @@ export class AppModule {
           path: 'payment/webhook',
           method: RequestMethod.POST,
         },
-        'stream',
+        {
+          path: 'aiagent/message-response',
+          method: RequestMethod.POST,
+        },
       )
       .forRoutes('*');
   }
