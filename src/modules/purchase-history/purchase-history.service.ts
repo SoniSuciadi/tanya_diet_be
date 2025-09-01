@@ -133,7 +133,6 @@ export class PurchaseHistoryService {
         rowsPerPage,
       },
     );
-    console.log('👻 ~ PurchaseHistoryService ~ getList ~ data:', data);
     return data;
   }
 }
