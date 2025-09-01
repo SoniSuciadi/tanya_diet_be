@@ -55,7 +55,10 @@ export class AuthController {
   }
 
   @Get('refresh-token')
-  async refresh(@Req() req: Request) {
+  async refresh(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const { cookies } = req;
     const refreshToken = cookies.refresh_token;
     if (!refreshToken) {
@@ -63,6 +66,12 @@ export class AuthController {
     }
     const user = await this.authService.getUserByRefreshToken(refreshToken);
     if (!user) {
+      res.clearCookie('refresh_token', {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: true,
+        domain: process.env.COOKIE_DOMAIN,
+      });
       throw new UnauthorizedException('Invalid refresh token');
     }
     const { id } = user;

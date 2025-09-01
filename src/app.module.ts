@@ -16,6 +16,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
 import { ClassesModule } from './modules/classes/classes.module';
 import { OrderClassModule } from './modules/order-class/order-class.module';
 import { OrderModule } from './modules/order/order.module';
+import { PurchaseHistoryModule } from './modules/purchase-history/purchase-history.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { OrderModule } from './modules/order/order.module';
     ClassesModule,
     OrderClassModule,
     OrderModule,
+    PurchaseHistoryModule,
   ],
   providers: [
     {
