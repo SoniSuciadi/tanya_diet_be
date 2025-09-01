@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DbTx } from 'src/common/database/database.type';
-import { ClassOderData, LessonDetail } from './order-class.dto';
+import {
+  ClassOderData,
+  LessonDetail,
+  Question,
+  TestDto,
+} from './order-class.dto';
 import { DatabaseService } from 'src/common/database/database.service';
 import { UserService } from '../user/user.service';
 import * as midtransClient from 'midtrans-client';
@@ -210,5 +215,88 @@ export class OrderClassService {
       },
     );
     return data;
+  }
+  async getTest(
+    context: 'Pre' | 'Post',
+    lessonId: string,
+  ): Promise<Question[]> {
+    const data = await this.databaseService.db.oneOrNone<{ test: Question[] }>(
+      `select ${context.toLocaleLowerCase()}_test as test from course_material cm where cm.id = $<lessonId>`,
+      {
+        lessonId,
+      },
+    );
+    if (!data?.test) return [];
+    return data?.test;
+  }
+  async updateTestResult(
+    classId: string,
+    lessonId: string,
+    context: 'Pre' | 'Post',
+    data: TestDto,
+  ) {
+    const orderCourseMaterial = await this.databaseService.db.oneOrNone<{
+      id: string;
+    }>(
+      `
+        SELECT ocm.id
+        FROM
+            course_material cm
+        RIGHT JOIN order_course_material ocm ON cm.id = ocm.course_material_id
+        RIGHT JOIN order_class oc ON oc.id = ocm.order_class_id
+        WHERE cm.id = $<lessonId> AND oc.class_id = $<classId> AND oc.user_id=$<userId>
+        `,
+      {
+        lessonId,
+        classId,
+        userId: this.userService.get().id,
+      },
+    );
+    if (!orderCourseMaterial) return;
+    await this.databaseService.updateOne({
+      table: 'order_course_material',
+      data:
+        context === 'Pre'
+          ? {
+              pre_test_passed: true,
+              result_pre_test: JSON.stringify(data.testResult),
+            }
+          : {
+              post_test_passed: data.passed,
+              result_post_test: JSON.stringify(data.testResult),
+            },
+      where: {
+        id: orderCourseMaterial?.id,
+      },
+    });
+  }
+  async updateVideoStatus(classId: string, lessonId: string) {
+    const orderCourseMaterial = await this.databaseService.db.oneOrNone<{
+      id: string;
+    }>(
+      `
+        SELECT ocm.id
+        FROM
+            course_material cm
+        RIGHT JOIN order_course_material ocm ON cm.id = ocm.course_material_id
+        RIGHT JOIN order_class oc ON oc.id = ocm.order_class_id
+        WHERE cm.id = $<lessonId> AND oc.class_id = $<classId> AND oc.user_id=$<userId>
+        `,
+      {
+        lessonId,
+        classId,
+        userId: this.userService.get().id,
+      },
+    );
+    if (!orderCourseMaterial) return;
+    await this.databaseService.updateOne({
+      table: 'order_course_material',
+      data: {
+        video_passed: true,
+      },
+      where: {
+        id: orderCourseMaterial?.id,
+      },
+    });
   }
 }
