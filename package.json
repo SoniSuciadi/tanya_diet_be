@@ -39,6 +39,7 @@
     "dotenv": "^17.2.1",
     "jsonwebtoken": "^9.0.2",
     "midtrans-client": "^1.4.3",
+    "nodemailer": "^7.0.6",
     "openai": "^5.10.2",
     "pg-promise": "^11.15.0",
     "reflect-metadata": "^0.2.2",

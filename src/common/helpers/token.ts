@@ -13,3 +13,8 @@ export const genAccessToken = (payload: TokenPayload) => {
     expiresIn: '1h',
   });
 };
+export const genResetToken = (payload: TokenPayload) => {
+  return jwt.sign(payload, process.env.JWT_SECRET_KEY!, {
+    expiresIn: '1d',
+  });
+};
