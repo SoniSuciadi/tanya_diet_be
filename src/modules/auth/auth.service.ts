@@ -47,12 +47,29 @@ export class AuthService {
       refreshToken,
     });
   }
+  getUserByResetToken(token: string) {
+    const query = `SELECT id from users where reset_password_token = $<token>`;
+    return this.databaseService.db.oneOrNone(query, {
+      token,
+    });
+  }
 
   updateRefreshTokenByUserId(refreshToken: string, userId: string) {
     this.databaseService.updateOne({
       table: 'users',
       data: {
         refreshToken,
+      },
+      where: {
+        id: userId,
+      },
+    });
+  }
+  async updateResetTokenByUserId(token: string, userId: string) {
+    await this.databaseService.updateOne({
+      table: 'users',
+      data: {
+        reset_password_token: token,
       },
       where: {
         id: userId,
@@ -95,5 +112,16 @@ export class AuthService {
       },
     });
     return userId;
+  }
+  async updatePassword(userId: string, password: string) {
+    await this.databaseService.updateOne({
+      table: 'users',
+      data: {
+        password: genHash(password),
+      },
+      where: {
+        id: userId,
+      },
+    });
   }
 }
