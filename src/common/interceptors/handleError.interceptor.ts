@@ -19,7 +19,7 @@ export class HandleError implements ExceptionFilter {
   catch(exception, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    // console.log('👻 ~ HandleError ~ catch ~ response:', response);
+    // console.log('👻 ~ HandleError ~ catch ~ response:', response.message);
 
     const resError: ErrorResponse = {
       name: 'Internal Server Error',

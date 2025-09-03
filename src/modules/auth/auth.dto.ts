@@ -43,3 +43,22 @@ export class RegisterDto {
   @IsNotEmpty()
   phoneNumber: string;
 }
+
+export class ForgotPasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  email: string;
+}
+export class ResetPasswordDto {
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  token: string;
+
+  @IsString()
+  @IsNotEmpty()
+  confirmPassword: string;
+}

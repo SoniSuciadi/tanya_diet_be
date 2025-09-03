@@ -17,6 +17,7 @@ import { ClassesModule } from './modules/classes/classes.module';
 import { OrderClassModule } from './modules/order-class/order-class.module';
 import { OrderModule } from './modules/order/order.module';
 import { PurchaseHistoryModule } from './modules/purchase-history/purchase-history.module';
+import { SendEmailService } from './modules/send-email/send-email.service';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { PurchaseHistoryModule } from './modules/purchase-history/purchase-histo
       useClass: HandleError,
     },
     PaymentService,
+    SendEmailService,
   ],
   controllers: [PaymentController],
 })
@@ -54,6 +56,14 @@ export class AppModule {
         {
           path: 'auth/login',
           method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/forgot-password',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/reset-password',
+          method: RequestMethod.PATCH,
         },
         {
           path: 'auth/register',
