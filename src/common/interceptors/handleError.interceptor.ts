@@ -1,7 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
-import { ErrorUniqueConstraint } from './handleErrorUniqueConstraint.interceptor';
-import { OrderNotFoundError } from './handleErrorOrderNotFound.interceptor';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+} from '@nestjs/common';
 
+// ErrorResponse interface yang lebih ketat
 export interface ErrorResponse {
   name: string;
   message: string;
@@ -14,29 +18,28 @@ export interface ErrorResponse {
   constraint?: string;
 }
 
-@Catch()
-export class HandleError implements ExceptionFilter {
-  catch(exception, host: ArgumentsHost) {
+@Catch(HttpException)
+export class HandleHttpError implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    // console.log('👻 ~ HandleError ~ catch ~ response:', response.message);
+    const status = exception.getStatus();
+    const message = exception.message;
 
     const resError: ErrorResponse = {
-      name: 'Internal Server Error',
-      message: 'Internal Server Error',
-      statusCode: 500,
+      name: exception.constructor.name || 'Internal Server Error',
+      message: message || 'Internal Server Error',
+      statusCode: status || 500,
     };
 
-    if (exception instanceof OrderNotFoundError) {
-      resError.name = 'NotFoundError';
-      resError.message = exception.message;
-      resError.statusCode = exception.statusCode;
-      resError.detail = exception.details;
-    } else if (exception instanceof ErrorUniqueConstraint) {
-      resError.name = 'NotFoundError';
-      resError.message = exception.message;
-      resError.statusCode = exception.statusCode;
-      resError.detail = exception.details;
+    // Customize the error response
+    if (exception instanceof HttpException) {
+      const responseObj = exception.getResponse();
+      if (typeof responseObj === 'object') {
+        resError.detail = responseObj['message'] || responseObj['detail'];
+      }
+    } else {
+      resError.detail = message;
     }
 
     response.status(resError.statusCode).json(resError);

@@ -16,17 +16,17 @@ export class ClassesService {
 
     const whereQuery: string[] = [
       `WHERE c.deleted_at IS NULL`,
-      `c.status = 'active'`,
+      `c.status = 'publish'`,
       `c.publish_until >= now()`,
     ];
     if (search) {
       whereQuery.push(`(c.title ILIKE '%$<search:value>%' )`);
     }
-    if (queries.category && queries.category !== 'all') {
-      whereQuery.push(`c.category = $<category>`);
+    if (queries.category && queries.category.toLowerCase() !== 'all') {
+      whereQuery.push(`c.category ILIKE $<category>`);
     }
-    if (queries.type && queries.type !== 'all') {
-      whereQuery.push(`c.type = $<type>`);
+    if (queries.type && queries.type.toLowerCase() !== 'all') {
+      whereQuery.push(`c.type ILIKE $<type>`);
     }
 
     let q = `
@@ -91,7 +91,7 @@ export class ClassesService {
         c.type,
         c.category,
         c.banner,
-        CASE WHEN oc.payment_status = 'settlement' AND oc.user_id = $<userId> THEN
+        CASE WHEN oc.payment_status = 'settlement' ${this?.userService?.get()?.id ? 'AND oc.user_id = $<userId>' : ''}THEN
                 true
         END AS "isPurchased",
         c.description,
@@ -121,9 +121,10 @@ export class ClassesService {
     `;
     const data = await this.databaseService.db.oneOrNone<ClassDetail>(q, {
       id,
-      userId: this.userService.get().id,
+      userId: this?.userService?.get()?.id || '',
     });
     if (!data) return null;
+
     const materialStatusData = this.generateCourseMaterialStatus(
       data?.materials || [],
       data?.isPurchased || false,
@@ -165,5 +166,18 @@ export class ClassesService {
 
       return { ...m, status };
     });
+  }
+  async getCategoryList(): Promise<string[]> {
+    const q = `SELECT DISTINCT category FROM classes ORDER BY category ASC`;
+    const data = await this.databaseService.db.manyOrNone(q);
+
+    return data.map((d) => d.category);
+  }
+  async getLiveClassRoom(id: string): Promise<string> {
+    const q = `SELECT live_class_room FROM live_sessions WHERE id = $<id>`;
+    const data = await this.databaseService.db.oneOrNone(q, {
+      id,
+    });
+    return data?.live_class_room || '';
   }
 }

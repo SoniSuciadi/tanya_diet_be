@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as midtransClient from 'midtrans-client';
 import * as crypto from 'crypto';
 import { MidtransWebhookPayload } from './payment.dto';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Injectable()
 export class PaymentService {
   public readonly snap: midtransClient.Snap;
