@@ -1,6 +1,7 @@
 import { Body, Controller, Headers, Post } from '@nestjs/common';
 import { CreatePayment } from './order.dto';
 import { OrderService } from './order.service';
+import { catchError } from 'src/common/utils/catchError';
 
 @Controller('order')
 export class OrderController {
@@ -16,13 +17,13 @@ export class OrderController {
         origin,
       );
       return {
-        message: 'success createPayment',
+        message: 'success order payment',
         data: {
           url: paymentUrl,
         },
       };
     } catch (error) {
-      throw new Error('Error creating payment: ' + error.message);
+      catchError(error, 'Kesalahan saat membuat payment');
     }
   }
 }

@@ -66,7 +66,10 @@ export class OrderClassService {
           },
         );
         if (!classDetail) {
-          return '';
+          throw new HttpException(
+            'Kelas tidak ditemukan atau tidak aktif.',
+            HttpStatus.NOT_FOUND,
+          );
         }
         const order = await this.databaseService.insertOne<{ id: string }>({
           table: 'order_class',
@@ -97,13 +100,6 @@ export class OrderClassService {
           { userId: this.userService.get().id },
         );
 
-        if (!classDetail) {
-          // Jika kelas tidak ditemukan, lemparkan exception
-          throw new HttpException(
-            'Kelas tidak ditemukan atau tidak aktif.',
-            HttpStatus.NOT_FOUND,
-          );
-        }
         const transactionData = {
           transaction_details: {
             order_id: `${order?.id}_${process.env.APP_NAME}Cls`,

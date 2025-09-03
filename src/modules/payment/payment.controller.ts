@@ -3,6 +3,7 @@ import { PaymentService } from './payment.service';
 import { MidtransWebhookPayload } from './payment.dto';
 import { OrderService } from '../order/order.service';
 import { OrderClassService } from '../order-class/order-class.service';
+import { catchError } from 'src/common/utils/catchError';
 
 @Controller('payment')
 export class PaymentController {
@@ -42,8 +43,7 @@ export class PaymentController {
           throw new Error('Error processing webhook');
       }
     } catch (error) {
-      this.logger.error('Error processing webhook: ', error);
-      throw new Error('Error processing webhook: ' + error.message);
+      catchError(error, 'Kesalahan saat memproses webhook');
     }
   }
 }
