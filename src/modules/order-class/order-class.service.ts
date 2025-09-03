@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DbTx } from 'src/common/database/database.type';
 import {
   ClassOderData,
@@ -97,6 +97,13 @@ export class OrderClassService {
           { userId: this.userService.get().id },
         );
 
+        if (!classDetail) {
+          // Jika kelas tidak ditemukan, lemparkan exception
+          throw new HttpException(
+            'Kelas tidak ditemukan atau tidak aktif.',
+            HttpStatus.NOT_FOUND,
+          );
+        }
         const transactionData = {
           transaction_details: {
             order_id: `${order?.id}_${process.env.APP_NAME}Cls`,
@@ -298,5 +305,31 @@ export class OrderClassService {
         id: orderCourseMaterial?.id,
       },
     });
+  }
+  async getLiveSessionById(classId: string) {
+    const data = await this.databaseService.db.oneOrNone(
+      `
+      SELECT
+        ls.title,
+        ls.description,
+        ls.meeting_link AS "meetingLink",
+        ls.recording_link AS "recordingLink",
+        ls.key_points AS "keyPoints",
+        ls.duration
+      FROM
+        order_class oc
+        LEFT JOIN live_sessions ls ON ls.class_id = oc.class_id
+      WHERE
+        oc.user_id = $<userId>
+        AND oc.payment_status = 'settlement'
+        AND oc.class_id = $<classId>
+
+      `,
+      {
+        classId,
+        userId: this.userService.get().id,
+      },
+    );
+    return data;
   }
 }

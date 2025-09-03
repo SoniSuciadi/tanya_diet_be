@@ -9,10 +9,12 @@ import {
 } from '@nestjs/common';
 import { OrderClassService } from './order-class.service';
 import { TestDto } from './order-class.dto';
+import { catchError } from 'src/common/utils/catchError';
 
 @Controller('order-class')
 export class OrderClassController {
   constructor(private orderClassService: OrderClassService) {}
+
   @Post(':id')
   async createOrderClass(
     @Param('id') id: string,
@@ -27,9 +29,10 @@ export class OrderClassController {
         },
       };
     } catch (error) {
-      throw new Error(error.message);
+      catchError(error, 'Kesalahan saat membuat order class');
     }
   }
+
   @Get(':classId/lesson/:lessonId')
   async getLessonById(
     @Param('classId') classId: string,
@@ -42,9 +45,10 @@ export class OrderClassController {
         data,
       };
     } catch (error) {
-      throw new Error(error.message);
+      catchError(error, 'Kesalahan saat mengambil data lesson');
     }
   }
+
   @Get('lesson/:lessonId/:context/test')
   async getClassById(
     @Param('lessonId') lessonId: string,
@@ -57,9 +61,10 @@ export class OrderClassController {
         data,
       };
     } catch (error) {
-      throw new Error(error.message);
+      catchError(error, 'Kesalahan saat mengambil data test');
     }
   }
+
   @Patch(':classId/lesson/:lessonId/:context/test')
   async updateTest(
     @Param('lessonId') lessonId: string,
@@ -75,12 +80,13 @@ export class OrderClassController {
         body,
       );
       return {
-        message: 'Berhasil memperbari data test',
+        message: 'Berhasil memperbarui data test',
       };
     } catch (error) {
-      throw new Error(error.message);
+      catchError(error, 'Kesalahan saat memperbarui data test');
     }
   }
+
   @Patch(':classId/lesson/:lessonId/video')
   async updateVideoStatus(
     @Param('lessonId') lessonId: string,
@@ -89,10 +95,23 @@ export class OrderClassController {
     try {
       await this.orderClassService.updateVideoStatus(classId, lessonId);
       return {
-        message: 'Berhasil memperbari data video',
+        message: 'Berhasil memperbarui data video',
       };
     } catch (error) {
-      throw new Error(error.message);
+      catchError(error, 'Kesalahan saat memperbarui status video');
+    }
+  }
+
+  @Get('live-session/:classId')
+  async getLiveSessionById(@Param('classId') classId: string) {
+    try {
+      const data = await this.orderClassService.getLiveSessionById(classId);
+      return {
+        message: 'Berhasil mengambil data live session',
+        data,
+      };
+    } catch (error) {
+      catchError(error, 'Kesalahan saat mengambil data live session');
     }
   }
 }

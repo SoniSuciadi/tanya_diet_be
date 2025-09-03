@@ -1,8 +1,8 @@
 import { Module, RequestMethod } from '@nestjs/common';
 import { AuthModule } from './modules/auth/auth.module';
-import { APP_FILTER, APP_INTERCEPTOR, MiddlewareBuilder } from '@nestjs/core';
+import { APP_INTERCEPTOR, MiddlewareBuilder } from '@nestjs/core';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { HandleError } from './common/interceptors/handleError.interceptor';
+
 import { AuthenticationMiddleware } from './common/middlewares/authentication.middleware';
 import { UserModule } from './modules/user/user.module';
 import { DatabaseModule } from './common/database/database.module';
@@ -39,10 +39,7 @@ import { SendEmailService } from './modules/send-email/send-email.service';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    {
-      provide: APP_FILTER,
-      useClass: HandleError,
-    },
+
     PaymentService,
     SendEmailService,
   ],
@@ -56,6 +53,14 @@ export class AppModule {
         {
           path: 'auth/login',
           method: RequestMethod.POST,
+        },
+        {
+          path: 'classes',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'classes/*',
+          method: RequestMethod.GET,
         },
         {
           path: 'auth/forgot-password',

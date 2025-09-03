@@ -19,6 +19,23 @@ export class ClassesController {
       data: objResult,
     };
   }
+  @Get('category-list')
+  async getCategoryList() {
+    console.log('masukkkk');
+    const data = await this.classService.getCategoryList();
+    return {
+      message: 'Berhasil mengambil data class',
+      data,
+    };
+  }
+  @Get('live-class-room/:id')
+  async getLiveClassRoom(@Param('id') id: string) {
+    const data = await this.classService.getLiveClassRoom(id);
+    return {
+      message: 'Berhasil mengambil data class',
+      data,
+    };
+  }
   @Get(':id')
   async getClassById(@Param('id') id: string) {
     const data = await this.classService.getClassById(id);
