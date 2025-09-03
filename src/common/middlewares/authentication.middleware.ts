@@ -15,6 +15,7 @@ export type UserPayload = {
   id: string;
   name: string;
   email: string;
+  sessionEnd: string | null;
 };
 
 declare module 'express-serve-static-core' {

@@ -13,6 +13,11 @@ import { PaymentController } from './modules/payment/payment.controller';
 import { PaymentService } from './modules/payment/payment.service';
 import { PaymentModule } from './modules/payment/payment.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { ClassesModule } from './modules/classes/classes.module';
+import { OrderClassModule } from './modules/order-class/order-class.module';
+import { OrderModule } from './modules/order/order.module';
+import { PurchaseHistoryModule } from './modules/purchase-history/purchase-history.module';
+import { SendEmailService } from './modules/send-email/send-email.service';
 
 @Module({
   imports: [
@@ -24,6 +29,10 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     AiModule,
     PaymentModule,
     WebsocketModule,
+    ClassesModule,
+    OrderClassModule,
+    OrderModule,
+    PurchaseHistoryModule,
   ],
   providers: [
     {
@@ -35,6 +44,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
       useClass: HandleError,
     },
     PaymentService,
+    SendEmailService,
   ],
   controllers: [PaymentController],
 })
@@ -46,6 +56,14 @@ export class AppModule {
         {
           path: 'auth/login',
           method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/forgot-password',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'auth/reset-password',
+          method: RequestMethod.PATCH,
         },
         {
           path: 'auth/register',
@@ -67,7 +85,6 @@ export class AppModule {
           path: 'aiagent/message-response',
           method: RequestMethod.POST,
         },
-        'stream',
       )
       .forRoutes('*');
   }

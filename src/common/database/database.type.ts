@@ -1,6 +1,6 @@
 import * as pgPromise from 'pg-promise';
 
-import { IClient } from 'pg-promise/typescript/pg-subset';
+import pg, { IClient } from 'pg-promise/typescript/pg-subset';
 
 export interface InsertOneProps {
   transaction?:
@@ -10,6 +10,7 @@ export interface InsertOneProps {
   data: { [key: string]: unknown };
   returning?: string[];
 }
+export type DbTx = pgPromise.ITask<pg.IClient> & pg.IClient;
 
 export interface InsertBulkProps {
   table: string;
