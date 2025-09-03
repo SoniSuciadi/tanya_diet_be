@@ -16,7 +16,7 @@ export class ClassesService {
 
     const whereQuery: string[] = [
       `WHERE c.deleted_at IS NULL`,
-      `c.status = 'active'`,
+      `c.status = 'publish'`,
       `c.publish_until >= now()`,
     ];
     if (search) {

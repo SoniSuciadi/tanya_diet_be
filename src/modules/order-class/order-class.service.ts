@@ -59,7 +59,7 @@ export class OrderClassService {
             c.original_price AS "originalPrice"
         FROM
             classes c
-        WHERE c.id = $<classId> AND c.deleted_at IS NULL AND c.status = 'active'
+        WHERE c.id = $<classId> AND c.deleted_at IS NULL AND c.status = 'publish'
         `,
           {
             classId,
