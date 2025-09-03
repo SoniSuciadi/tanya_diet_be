@@ -21,7 +21,6 @@ export interface ErrorResponse {
 @Catch(HttpException)
 export class HandleHttpError implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost): void {
-    console.log('MASOK');
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const status = exception.getStatus();
