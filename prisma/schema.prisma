@@ -121,6 +121,8 @@ model classes {
   order_class         order_class[]
   live_session        live_sessions[]
   course_material     course_material[]
+
+  @@index([category])
 }
 
 model live_sessions {

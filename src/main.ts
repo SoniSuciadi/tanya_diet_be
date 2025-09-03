@@ -4,7 +4,7 @@ import * as compression from 'compression';
 import * as cookieParser from 'cookie-parser';
 
 import * as bodyParser from 'body-parser';
-import { HandleError } from './common/interceptors/handleError.interceptor';
+import { HandleHttpError } from './common/interceptors/handleError.interceptor';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { DatabaseService } from './common/database/database.service';
@@ -35,7 +35,7 @@ class Application {
   }
 
   private setupInterceptorsAndFilters() {
-    this.app.useGlobalFilters(new HandleError());
+    this.app.useGlobalFilters(new HandleHttpError());
   }
   private async start() {
     await this.app.listen(this.PORT, () => {
@@ -57,6 +57,7 @@ class Application {
     });
     this.configureMiddleware();
     this.setupInterceptorsAndFilters();
+
     this.app.setGlobalPrefix('v1');
     this.app.useGlobalPipes(
       new ValidationPipe({
