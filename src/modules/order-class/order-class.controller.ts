@@ -68,7 +68,7 @@ export class OrderClassController {
   @Patch(':classId/lesson/:lessonId/:context/test')
   async updateTest(
     @Param('lessonId') lessonId: string,
-    @Param('context') context: 'pre' | 'post',
+    @Param('context') context: 'Pre' | 'Post',
     @Body() body: TestDto,
     @Param('classId') classId: string,
   ) {
@@ -76,7 +76,7 @@ export class OrderClassController {
       await this.orderClassService.updateTestResult(
         classId,
         lessonId,
-        context,
+        context.toLowerCase(),
         body,
       );
       return {

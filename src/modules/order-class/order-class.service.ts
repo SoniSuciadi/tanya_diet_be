@@ -235,7 +235,7 @@ export class OrderClassService {
   async updateTestResult(
     classId: string,
     lessonId: string,
-    context: 'pre' | 'post',
+    context: string,
     data: TestDto,
   ) {
     const orderCourseMaterial = await this.databaseService.db.oneOrNone<{
