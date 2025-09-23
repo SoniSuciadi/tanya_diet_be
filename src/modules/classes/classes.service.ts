@@ -36,7 +36,7 @@ export class ClassesService {
             c.title,
             c.instructor,
             c.price,
-            c.original_price,
+            c.original_price AS "originalPrice",
             c.duration,
             count(
                 CASE WHEN oc.payment_status = 'settlement' THEN
@@ -78,7 +78,7 @@ export class ClassesService {
         c.instructor,
         c.instructor_bio AS "instructorBio",
         c.price,
-        c.original_price,
+        c.original_price AS "originalPrice",
         c.duration,
         count(
             CASE WHEN oc.payment_status = 'settlement' THEN
@@ -124,7 +124,9 @@ export class ClassesService {
       userId: this?.userService?.get()?.id || '',
     });
     if (!data) return null;
-
+    if (!this?.userService?.get()?.id) {
+      data.isPurchased = false;
+    }
     const materialStatusData = this.generateCourseMaterialStatus(
       data?.materials || [],
       data?.isPurchased || false,

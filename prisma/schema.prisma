@@ -106,7 +106,7 @@ model classes {
   duration            String
   type                String            @default("course")
   category            String
-  status              String            @default("pending")
+  status              String            @default("draft")
   description         String
   schedule            String
   publish_until       DateTime?

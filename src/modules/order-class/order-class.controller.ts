@@ -52,7 +52,7 @@ export class OrderClassController {
   @Get('lesson/:lessonId/:context/test')
   async getClassById(
     @Param('lessonId') lessonId: string,
-    @Param('context') context: 'Pre' | 'Post',
+    @Param('context') context: 'pre' | 'post',
   ) {
     try {
       const data = await this.orderClassService.getTest(context, lessonId);
@@ -68,7 +68,7 @@ export class OrderClassController {
   @Patch(':classId/lesson/:lessonId/:context/test')
   async updateTest(
     @Param('lessonId') lessonId: string,
-    @Param('context') context: 'Pre' | 'Post',
+    @Param('context') context: 'pre' | 'post',
     @Body() body: TestDto,
     @Param('classId') classId: string,
   ) {

@@ -220,7 +220,7 @@ export class OrderClassService {
     return data;
   }
   async getTest(
-    context: 'Pre' | 'Post',
+    context: 'pre' | 'post',
     lessonId: string,
   ): Promise<Question[]> {
     const data = await this.databaseService.db.oneOrNone<{ test: Question[] }>(
@@ -235,7 +235,7 @@ export class OrderClassService {
   async updateTestResult(
     classId: string,
     lessonId: string,
-    context: 'Pre' | 'Post',
+    context: 'pre' | 'post',
     data: TestDto,
   ) {
     const orderCourseMaterial = await this.databaseService.db.oneOrNone<{
@@ -259,7 +259,7 @@ export class OrderClassService {
     await this.databaseService.updateOne({
       table: 'order_course_material',
       data:
-        context === 'Pre'
+        context === 'pre'
           ? {
               pre_test_passed: true,
               result_pre_test: JSON.stringify(data.testResult),
